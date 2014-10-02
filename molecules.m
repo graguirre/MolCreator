@@ -13,8 +13,9 @@ function x=polygon(p,r)
 end
 % return apotheme of a 1 size side polygon (P=#-of-sized)
 function [a,r]=apotheme(p)
-	a = 1.4/tan( pi/p );
-	r = 1.4/sin( pi/p );
+	bond = 1.4; % C-C
+	a = bond/(2*tan( pi/p ));
+	r = bond/(2*sin( pi/p ));
 end
 function x=translate(X,tx,ty)
 	% create translation matrix
@@ -47,9 +48,9 @@ x5 = rotate(x5, pi/7);
 C10H8 = [x7 x5]; % there are 2 repeated atoms
 C10H8(:,[1 7]) = []; % erase repeated atoms
 
-hold on;
+%hold on; % uncomment if debugging
 C10H8 = translate(C10H8, -C10H8(1,3), -C10H8(2,3));
-plot(C10H8(1,:),C10H8(2,:),'r.');
+%plot(C10H8(1,:),C10H8(2,:),'r.'); % uncomment if debuigging
 
 print(C10H8);
 % get rotation
@@ -59,11 +60,11 @@ alpha = atan( v(1)/v(2) );
 t=[C10H8(1,9) C10H8(2,9)];
 
 C10H8(:,[2 3]) = []; % erase repeated atoms
-for i=1:0
+for i=1:32
 	C10H8 = rotate(C10H8,-alpha);
 	C10H8 = translate(C10H8, t(1), t(2));
-	plot(C10H8(1,:),C10H8(2,:),'b.');
+	%plot(C10H8(1,:),C10H8(2,:),'b.'); % uncomment if debugging
 	print(C10H8);
 end
 
-input("Press enter to continue...");
+%input("Press enter to continue...");
