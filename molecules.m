@@ -4,6 +4,14 @@
 %
 % Gonzalo Aguirre <graguirre@gmail.com>
 %
+
+% bond distance (Angstroms)
+%
+% C-C 1.20 -- 1.54
+% C=C 1.33 
+% C-H 1.06 -- 1.12
+% 
+
 % return set of coordinates centered at origin
 function x=polygon(p,r)
 	for i=[1:p]
