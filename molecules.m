@@ -21,9 +21,9 @@ function x=polygon(p,r)
 end
 % return apotheme of a 1 size side polygon (P=#-of-sized)
 function [a,r]=apotheme(p)
-	bond = 1.4; % C-C
-	a = bond/(2*tan( pi/p ));
-	r = bond/(2*sin( pi/p ));
+	bondCC = 1.35; % C-C
+	a = bondCC/(2*tan( pi/p ));
+	r = bondCC/(2*sin( pi/p ));
 end
 function x=translate(X,tx,ty)
 	% create translation matrix
@@ -38,29 +38,51 @@ function x=rotate(X,theta)
 	R = [cos(theta) -sin(theta); sin(theta) cos(theta)];
 	x = R * X;
 end
-function print(v)
+
+%
+% print atoms coordinate 
+% parameters: v vector, r repeated molecule (0 first, 1 other case)
+%
+function print(v,r) 
+	if (r == 0)
+		r = 11;
+	else
+		r = 9;
+	end
 	for i=1:length(v)
-		printf("C %.6f %.6f 0.0\n ", v(1,i), v(2,i))
+		if (i < r)
+			printf(" C\t%.1f\t%.6f\t%.6f\t%.6f\n", 6, v(1,i), v(2,i), 0)
+		else
+			printf(" H\t%.1f\t%.6f\t%.6f\t%.6f\n", 1, v(1,i), v(2,i), 0)
+		end
 	end
 end
-% create pentagon
-[a5,r5]=apotheme(5);
-x5=polygon(5,r5);
-%create heptagon
-[a7,r7]=apotheme(7);
-x7=polygon(7,r7);
+bondCH=1.1;
+
+% create regular pentagon
+[a5,r5] = apotheme(5);
+C5 = polygon(5, r5);
+H5 = polygon(5, r5 + bondCH);  % hydrogenate
+H5(:,[2:5]) = [];
+
+%create regular heptagon
+[a7,r7] = apotheme(7);
+C7 = polygon(7, r7);
+H7 = polygon(7, r7 + bondCH); % hydrogenate
+H7(:,[1 3 4 7]) = [];
+
 % pentagon translation matrix
-x5 = translate(x5, a5+a7, 0);
-x5 = rotate(x5, pi/7);
+C5 = translate([C5 H5], a5+a7, 0);
+C5 = rotate(C5, pi/7);
 % attach azulene molecule
-C10H8 = [x7 x5]; % there are 2 repeated atoms
+C10H8 = [C7 C5 H7]; % there are 2 repeated atoms
 C10H8(:,[1 7]) = []; % erase repeated atoms
 
 %hold on; % uncomment if debugging
 C10H8 = translate(C10H8, -C10H8(1,3), -C10H8(2,3));
 %plot(C10H8(1,:),C10H8(2,:),'r.'); % uncomment if debuigging
 
-print(C10H8);
+print(C10H8, 0);
 % get rotation
 v = [C10H8(1,10)-C10H8(1,9) C10H8(2,10)-C10H8(2,9)];
 alpha = atan( v(1)/v(2) );
@@ -72,7 +94,7 @@ for i=1:32
 	C10H8 = rotate(C10H8,-alpha);
 	C10H8 = translate(C10H8, t(1), t(2));
 	%plot(C10H8(1,:),C10H8(2,:),'b.'); % uncomment if debugging
-	print(C10H8);
+	print(C10H8,1);
 end
 
 %input("Press enter to continue...");
