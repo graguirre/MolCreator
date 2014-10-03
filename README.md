@@ -13,7 +13,9 @@ Execute
 -------
 
 Get into the project directory
+
 $ cd molecules
 
 execute it
+
 $ octave --silent molecules.m
