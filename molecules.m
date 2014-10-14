@@ -57,19 +57,33 @@ function print(v,r)
 		end
 	end
 end
-bondCH=1.1;
+
+%
+%%% Main program 
+%
+
+bondCH = 1.1;
+hydro = 0;	% hydrogenate
+plt = 1;	% plot
+mol = 2;	% number of molecules
 
 % create regular pentagon
 [a5,r5] = apotheme(5);
 C5 = polygon(5, r5);
-H5 = polygon(5, r5 + bondCH);  % hydrogenate
-H5(:,[2:5]) = [];
+H5 = [];	
+if ( hydro == 1 )
+	H5 = polygon(5, r5 + bondCH);  % hydrogenate
+	H5(:,[2:5]) = [];
+end
 
 %create regular heptagon
 [a7,r7] = apotheme(7);
 C7 = polygon(7, r7);
-H7 = polygon(7, r7 + bondCH); % hydrogenate
-H7(:,[1 3 4 7]) = [];
+H7 = [];
+if ( hydro == 1)
+	H7 = polygon(7, r7 + bondCH); % hydrogenate
+	H7(:,[1 3 4 7]) = [];
+end
 
 % pentagon translation matrix
 C5 = translate([C5 H5], a5+a7, 0);
@@ -78,9 +92,11 @@ C5 = rotate(C5, pi/7);
 C10H8 = [C7 C5 H7]; % there are 2 repeated atoms
 C10H8(:,[1 7]) = []; % erase repeated atoms
 
-%hold on; % uncomment if debugging
 C10H8 = translate(C10H8, -C10H8(1,3), -C10H8(2,3));
-%plot(C10H8(1,:),C10H8(2,:),'r.'); % uncomment if debuigging
+if ( plt == 1 )
+	hold on; % uncomment if debugging
+ 	plot(C10H8(1,:),C10H8(2,:),'r.'); % uncomment if debuigging
+end
 
 print(C10H8, 0);
 % get rotation
@@ -90,11 +106,15 @@ alpha = atan( v(1)/v(2) );
 t=[C10H8(1,9) C10H8(2,9)];
 
 C10H8(:,[2 3]) = []; % erase repeated atoms
-for i=1:32
+for i=1:mol-1
 	C10H8 = rotate(C10H8,-alpha);
 	C10H8 = translate(C10H8, t(1), t(2));
-	%plot(C10H8(1,:),C10H8(2,:),'b.'); % uncomment if debugging
+	if ( plt == 1 )
+		plot(C10H8(1,:),C10H8(2,:),'b.'); % uncomment if debugging
+	end
 	print(C10H8,1);
 end
 
-%input("Press enter to continue...");
+if ( plt == 1 )
+	input("Press enter to continue...");
+end
